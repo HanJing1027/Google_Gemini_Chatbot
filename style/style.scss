@@ -1,9 +1,165 @@
 @use "./reset";
+@use "./variables";
 
 * {
   font-family: "Noto Sans HK", serif;
 }
 
 body {
-  // 
+  background-color: variables.$primary-color;
+}
+
+.header,
+.typing-form {
+  max-width: 1000px;
+  margin   : 0 auto;
+}
+
+.header {
+  color     : variables.$text-color;
+  margin-top: 7vh;
+  padding   : 1rem;
+
+  .title {
+    color                  : transparent;
+    font-size              : 2.7rem;
+    font-weight            : 700;
+    background-clip        : text;
+    background             : linear-gradient(to right, #4285F4, #D96570);
+    width                  : fit-content;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: t ransparent;
+    line-height            : 3.6rem;
+  }
+
+  .subtitle {
+    font-size  : 2.4rem;
+    font-weight: 600;
+    color      : variables.$subheading-color;
+    line-height: 3.6rem;
+  }
+
+  .suggestion-list {
+    display        : flex;
+    gap            : 1.25rem;
+    margin-top     : 9.5vh;
+    overflow-x     : auto;
+    scrollbar-width: none;
+  }
+}
+
+.suggestion-list {
+
+  .suggestion {
+    display         : flex;
+    flex-direction  : column;
+    align-items     : flex-end;
+    justify-content : space-between;
+    width           : 227px;
+    cursor          : pointer;
+    padding         : 1.25rem;
+    border-radius   : 8px;
+    flex-shrink     : 0;
+    background-color: variables.$secondary-color;
+
+    transition: all .15s ease-in-out;
+
+    &:hover {
+      background-color: variables.$secondary-hover-color;
+    }
+
+    .text {
+      font-weight: 400px;
+      line-height: 1.5;
+    }
+
+    .icon {
+      @include variables.marker;
+    }
+  }
+}
+
+.typing-area {
+  width   : 100%;
+  position: fixed;
+  bottom  : 25px;
+  color   : variables.$text-color;
+
+  .typing-form {
+    display: flex;
+    gap    : 10px;
+    padding: 0 1rem;
+  }
+}
+
+.input-wrapper {
+  position   : relative;
+  width      : 100%;
+  height     : 56px;
+  display    : flex;
+  align-items: center;
+
+  .typing-input {
+    width           : 100%;
+    height          : 100%;
+    border-radius   : 60px;
+    border          : none;
+    outline         : none;
+    background-color: variables.$secondary-color;
+    padding         : 0 30px;
+    color           : #FFF;
+    font-size       : 1rem;
+
+    transition: all .15s ease;
+
+    &:focus {
+      background-color: variables.$secondary-hover-color;
+    }
+
+    &::placeholder {
+      color: variables.$placeholder-color;
+    }
+
+    &:valid+.send-btn {
+      --scale: 1;
+    }
+  }
+
+  .send-btn {
+    cursor          : pointer;
+    position        : absolute;
+    right           : 30px;
+    top             : 50%;
+    --scale         : 0; // 使用 CSS 變數來分開控制縮放和位移
+    transform       : translateY(-50%) scale(var(--scale));
+    border          : none;
+    background-color: transparent;
+    color           : #FFF;
+    font-size       : 1.25rem;
+
+    transform-origin: center;
+    transition      : all .15s ease;
+  }
+}
+
+.action-buttons {
+  display    : flex;
+  align-items: center;
+  gap        : 10px;
+
+  i {
+    @include variables.marker;
+    cursor          : pointer;
+    width           : 56px;
+    height          : 56px;
+    font-size       : 1.4rem;
+    margin-top      : 0;
+    background-color: variables.$secondary-color;
+
+    transition: all .15s ease;
+
+    &:hover {
+      background-color: variables.$secondary-hover-color;
+    }
+  }
 }
