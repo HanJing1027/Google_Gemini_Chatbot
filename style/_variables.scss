@@ -5,6 +5,26 @@ $primary-color         : #242424;
 $secondary-color       : #383838;
 $secondary-hover-color : #444;
 
+$loading-message: loading-message 3s linear infinite;
+
+@keyframes loading-message {
+  0% {
+    background-position: 0 0;
+  }
+
+  100% {
+    background-position: 1600px 0;
+  }
+}
+
+$loading-avatar: loading-avatar 3s ease-in-out infinite;
+
+@keyframes loading-avatar {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
 @mixin marker {
   display         : flex;
   align-items     : center;

@@ -141,6 +141,19 @@ img {
   box-sizing: border-box;
 }
 
+@keyframes loading-message {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 1600px 0;
+  }
+}
+@keyframes loading-avatar {
+  100% {
+    transform: rotate(360deg);
+  }
+}
 * {
   font-family: "Noto Sans HK", serif;
 }
@@ -150,12 +163,14 @@ body {
 }
 
 .header,
-.typing-form {
+.typing-form,
+.message-content {
   max-width: 1000px;
   margin: 0 auto;
 }
 
 .header {
+  display: none;
   color: #E3E3E3;
   margin-top: 7vh;
   padding: 1rem;
@@ -217,6 +232,91 @@ body {
   margin-top: 2.5rem;
   border-radius: 50%;
   background-color: #242424;
+}
+
+.chat-list {
+  width: 100%;
+}
+
+.message {
+  position: relative;
+  padding: 2.5rem 0;
+}
+.message:not(.loading):hover .icon {
+  visibility: visible;
+  opacity: 1;
+}
+.message .message-content {
+  display: flex;
+  gap: 40px;
+  align-items: center;
+}
+.message .avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  -o-object-fit: cover;
+     object-fit: cover;
+  align-self: flex-start;
+}
+.message .message-text {
+  color: #E3E3E3;
+  line-height: 1.5;
+}
+.message .icon {
+  position: absolute;
+  right: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  border-radius: 50%;
+  font-size: 1.25rem;
+  color: #E3E3E3;
+  transition: all 0.15s ease;
+  visibility: hidden;
+  opacity: 0;
+}
+
+.outgoing .icon {
+  background-color: #383838;
+}
+
+.incoming {
+  background-color: #383838;
+}
+.incoming .icon {
+  background-color: #242424;
+}
+
+.message.loading .message-text {
+  display: none;
+}
+.message.loading .avatar {
+  animation: loading-avatar 3s ease-in-out infinite;
+}
+
+.loading-indicator {
+  display: flex;
+  width: 100%;
+  gap: 16px;
+  flex-direction: column;
+}
+.loading-indicator .loading-bar {
+  height: 11px;
+  width: 100%;
+  border-radius: 5px;
+  background: linear-gradient(45deg, #4285F4, #242424, #4285F4);
+  background-size: 1600px 100%;
+  animation: loading-message 3s linear infinite;
+}
+.loading-indicator .loading-bar:nth-child(2) {
+  width: 88%;
+}
+.loading-indicator .loading-bar:nth-child(3) {
+  width: 77%;
 }
 
 .typing-area {

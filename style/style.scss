@@ -10,12 +10,16 @@ body {
 }
 
 .header,
-.typing-form {
+.typing-form,
+.message-content {
   max-width: 1000px;
   margin   : 0 auto;
 }
 
+// 聊天視窗
 .header {
+  display: none;
+
   color     : variables.$text-color;
   margin-top: 7vh;
   padding   : 1rem;
@@ -79,6 +83,107 @@ body {
   }
 }
 
+// 聊天氣泡
+.chat-list {
+  width: 100%;
+}
+
+.message {
+  position: relative;
+  padding : 2.5rem 0;
+
+  &:not(.loading):hover .icon {
+    visibility: visible;
+    opacity   : 1;
+  }
+
+  .message-content {
+    // width      : 100%;
+    display    : flex;
+    gap        : 40px;
+    align-items: center;
+  }
+
+  .avatar {
+    width        : 40px;
+    height       : 40px;
+    border-radius: 50%;
+    object-fit   : cover;
+    align-self   : flex-start;
+  }
+
+  .message-text {
+    color      : variables.$text-color;
+    line-height: 1.5;
+  }
+
+  .icon {
+    position       : absolute;
+    right          : 100px;
+    display        : flex;
+    align-items    : center;
+    justify-content: center;
+    width          : 40px;
+    height         : 40px;
+    cursor         : pointer;
+    border-radius  : 50%;
+    font-size      : 1.25rem;
+    color          : variables.$text-color;
+    transition     : all .15s ease;
+
+    visibility: hidden;
+    opacity   : 0;
+  }
+}
+
+.outgoing .icon {
+  background-color: variables.$secondary-color;
+}
+
+.incoming {
+  background-color: variables.$secondary-color;
+
+  .icon {
+    background-color: variables.$primary-color;
+  }
+}
+
+.message.loading {
+
+  .message-text {
+    display: none;
+  }
+
+  .avatar {
+    animation: variables.$loading-avatar;
+  }
+}
+
+.loading-indicator {
+  display       : flex;
+  width         : 100%;
+  gap           : 16px;
+  flex-direction: column;
+
+  .loading-bar {
+    height         : 11px;
+    width          : 100%;
+    border-radius  : 5px;
+    background     : linear-gradient(45deg, #4285F4, variables.$primary-color, #4285F4);
+    background-size: 1600px 100%;
+    animation      : variables.$loading-message;
+
+    &:nth-child(2) {
+      width: 88%;
+    }
+
+    &:nth-child(3) {
+      width: 77%;
+    }
+  }
+}
+
+// 輸入框
 .typing-area {
   width   : 100%;
   position: fixed;

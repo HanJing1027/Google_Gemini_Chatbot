@@ -23,6 +23,7 @@
     <title>Google Gemini Chatbot</title>
   </head>
   <body>
+    <!-- 聊天視窗 -->
     <header class="header">
       <!-- 標題問候 -->
       <h2 class="title">Hello, there</h2>
@@ -64,6 +65,62 @@
         </li>
       </ul>
     </header>
+
+    <!-- 聊天氣泡 -->
+    <section class="chat-list">
+      <!-- user -->
+      <div class="message outgoing">
+        <div class="message-content">
+          <img class="avatar" src="images/unnamed.jpg" alt="user image" />
+          <p class="message-text">
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Eaque animi
+          </p>
+          <i class="icon bx bxs-edit"></i>
+        </div>
+        </div>
+      </div>
+
+      <!-- gemini -->
+      <div class="message incoming">
+        <div class="message-content">
+          <img
+            class="avatar"
+            src="images/gemini-color.png"
+            alt="gemini image"
+          />
+          <p class="message-text">
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Illo animi
+            iste dolores optio cumque autem veritatis cum maxime at incidunt
+            officiis, iusto sapiente modi, pariatur a. Incidunt in quia labore.
+            lorem
+          </p>
+          <i class="icon bx bx-copy"></i>
+        </div>
+      </div>
+
+      <!-- gemini loading -->
+      <!-- <div class="message incoming loading">
+        <div class="message-content">
+          <img
+            class="avatar"
+            src="images/gemini-color.png"
+            alt="gemini image"
+          />
+          <p class="message-text">
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Illo animi
+            iste dolores optio cumque autem veritatis cum maxime at incidunt
+            officiis, iusto sapiente modi, pariatur a. Incidunt in quia labore.
+            lorem
+          </p>
+          <div class="loading-indicator">
+            <div class="loading-bar"></div>
+            <div class="loading-bar"></div>
+            <div class="loading-bar"></div>
+          </div>
+          <i class="icon bx bx-copy"></i>
+        </div>
+      </div> -->
+    </section>
 
     <!-- 輸入框區域 -->
     <section class="typing-area">
