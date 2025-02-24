@@ -85,23 +85,27 @@ body {
 
 // 聊天氣泡
 .chat-list {
-  width: 100%;
+  width  : 100%;
+  padding: 0 1rem;
 }
 
 .message {
+  padding : 1.5rem 0;
   position: relative;
-  padding : 2.5rem 0;
 
   &:not(.loading):hover .icon {
     visibility: visible;
     opacity   : 1;
+    transform : scale(1);
   }
 
   .message-content {
-    // width      : 100%;
+    width      : 100%;
+    max-width  : 85%;
     display    : flex;
-    gap        : 40px;
-    align-items: center;
+    gap        : 1rem;
+    align-items: flex-start;
+    margin     : 0 auto;
   }
 
   .avatar {
@@ -109,42 +113,76 @@ body {
     height       : 40px;
     border-radius: 50%;
     object-fit   : cover;
-    align-self   : flex-start;
+    flex-shrink  : 0; // 防止圖片被擠壓
+
+    @media (max-width: 768px) {
+      width : 35px;
+      height: 35px;
+    }
   }
 
   .message-text {
-    color      : variables.$text-color;
-    line-height: 1.5;
+    word-wrap    : break-word;
+    color        : variables.$text-color;
+    line-height  : 1.5;
+    padding      : 1rem 1.5rem;
+    border-radius: 15px;
+    max-width    : 100%; // 確保文字不會溢出
   }
 
   .icon {
-    position       : absolute;
-    right          : 100px;
-    display        : flex;
-    align-items    : center;
-    justify-content: center;
-    width          : 40px;
-    height         : 40px;
-    cursor         : pointer;
-    border-radius  : 50%;
-    font-size      : 1.25rem;
-    color          : variables.$text-color;
-    transition     : all .15s ease;
+    display         : flex;
+    align-items     : center;
+    justify-content : center;
+    width           : 32px;
+    height          : 32px;
+    cursor          : pointer;
+    border-radius   : 50%;
+    font-size       : 1rem;
+    color           : variables.$text-color;
+    background-color: variables.$secondary-color;
+    transform       : scale(0.8);
+    transition      : all 0.2s ease;
+    margin          : 0 0.5rem; // 加入左右間距
+    flex-shrink     : 0; // 防止圖示被擠壓
 
     visibility: hidden;
     opacity   : 0;
   }
 }
 
-.outgoing .icon {
-  background-color: variables.$secondary-color;
+.outgoing {
+  .message-content {
+    flex-direction: row-reverse;
+    margin-left   : auto;
+  }
+
+  .message-text {
+    background             : variables.$secondary-color;
+    border-top-right-radius: 5px;
+  }
+
+  .icon {
+    margin-right: 0.5rem; // 調整右側間距
+
+    &:hover {
+      background-color: variables.$secondary-hover-color;
+    }
+  }
 }
 
 .incoming {
-  background-color: variables.$secondary-color;
+  .message-text {
+    background            : variables.$secondary-hover-color;
+    border-top-left-radius: 5px;
+  }
 
   .icon {
-    background-color: variables.$primary-color;
+    margin-left: 0.5rem; // 調整左側間距
+
+    &:hover {
+      background-color: variables.$secondary-color;
+    }
   }
 }
 
@@ -179,6 +217,83 @@ body {
 
     &:nth-child(3) {
       width: 77%;
+    }
+  }
+}
+
+.editing {
+  .message-content {
+    flex-wrap: wrap;
+    gap      : 1rem;
+    width    : 100%;
+  }
+
+  .edit-message-input {
+    flex         : 1;
+    min-height   : 45px;
+    border-radius: 15px;
+    background   : transparent;
+    outline      : none;
+    border       : 2px solid variables.$secondary-color;
+    color        : variables.$text-color;
+    line-height  : 1.5;
+    padding      : 0.75rem 1.5rem;
+    font-size    : 1rem;
+    resize       : vertical; // 允許垂直調整大小
+
+    @media (max-width: 768px) {
+      width     : 100%;
+      margin-top: 0.5rem;
+    }
+
+    transition: all .15s ease-in-out;
+
+    &:focus {
+      border-color: variables.$outline-color;
+    }
+  }
+
+  .edit-buttons {
+    display    : flex;
+    align-items: center;
+    gap        : 10px;
+    margin-left: auto; // 按鈕靠右對齊
+
+    @media (max-width: 768px) {
+      width          : 100%;
+      justify-content: flex-end;
+      margin-right   : 3.3rem;
+    }
+
+    .edit-btn {
+      min-width    : 70px;
+      height       : 40px;
+      padding      : 0 1.25rem;
+      cursor       : pointer;
+      border       : none;
+      border-radius: 50px;
+      font-size    : 0.95rem;
+
+      @media (max-width: 768px) {
+        flex     : 1;
+        max-width: 100px;
+      }
+
+      transition: all .15s ease-in-out;
+
+      &:hover {
+        filter: brightness(1.1);
+      }
+
+      &.save {
+        color           : variables.$outline-color;
+        background-color: variables.$secondary-color;
+      }
+
+      &.cancel {
+        color     : variables.$secondary-color;
+        background: variables.$outline-color;
+      }
     }
   }
 }

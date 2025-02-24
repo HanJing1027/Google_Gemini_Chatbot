@@ -236,20 +236,25 @@ body {
 
 .chat-list {
   width: 100%;
+  padding: 0 1rem;
 }
 
 .message {
+  padding: 1.5rem 0;
   position: relative;
-  padding: 2.5rem 0;
 }
 .message:not(.loading):hover .icon {
   visibility: visible;
   opacity: 1;
+  transform: scale(1);
 }
 .message .message-content {
+  width: 100%;
+  max-width: 85%;
   display: flex;
-  gap: 40px;
-  align-items: center;
+  gap: 1rem;
+  align-items: flex-start;
+  margin: 0 auto;
 }
 .message .avatar {
   width: 40px;
@@ -257,38 +262,65 @@ body {
   border-radius: 50%;
   -o-object-fit: cover;
      object-fit: cover;
-  align-self: flex-start;
+  flex-shrink: 0;
+}
+@media (max-width: 768px) {
+  .message .avatar {
+    width: 35px;
+    height: 35px;
+  }
 }
 .message .message-text {
+  word-wrap: break-word;
   color: #E3E3E3;
   line-height: 1.5;
+  padding: 1rem 1.5rem;
+  border-radius: 15px;
+  max-width: 100%;
 }
 .message .icon {
-  position: absolute;
-  right: 100px;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
+  width: 32px;
+  height: 32px;
   cursor: pointer;
   border-radius: 50%;
-  font-size: 1.25rem;
+  font-size: 1rem;
   color: #E3E3E3;
-  transition: all 0.15s ease;
+  background-color: #383838;
+  transform: scale(0.8);
+  transition: all 0.2s ease;
+  margin: 0 0.5rem;
+  flex-shrink: 0;
   visibility: hidden;
   opacity: 0;
 }
 
+.outgoing .message-content {
+  flex-direction: row-reverse;
+  margin-left: auto;
+}
+.outgoing .message-text {
+  background: #383838;
+  border-top-right-radius: 5px;
+}
 .outgoing .icon {
-  background-color: #383838;
+  margin-right: 0.5rem;
+}
+.outgoing .icon:hover {
+  background-color: #444;
 }
 
-.incoming {
-  background-color: #383838;
+.incoming .message-text {
+  background: #444;
+  border-top-left-radius: 5px;
 }
 .incoming .icon {
-  background-color: #242424;
+  margin-left: 0.5rem;
+}
+.incoming .icon:hover {
+  background-color: #383838;
 }
 
 .message.loading .message-text {
@@ -317,6 +349,75 @@ body {
 }
 .loading-indicator .loading-bar:nth-child(3) {
   width: 77%;
+}
+
+.editing .message-content {
+  flex-wrap: wrap;
+  gap: 1rem;
+  width: 100%;
+}
+.editing .edit-message-input {
+  flex: 1;
+  min-height: 45px;
+  border-radius: 15px;
+  background: transparent;
+  outline: none;
+  border: 2px solid #383838;
+  color: #E3E3E3;
+  line-height: 1.5;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  resize: vertical;
+  transition: all 0.15s ease-in-out;
+}
+@media (max-width: 768px) {
+  .editing .edit-message-input {
+    width: 100%;
+    margin-top: 0.5rem;
+  }
+}
+.editing .edit-message-input:focus {
+  border-color: #A9C7FA;
+}
+.editing .edit-buttons {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto;
+}
+@media (max-width: 768px) {
+  .editing .edit-buttons {
+    width: 100%;
+    justify-content: flex-end;
+    margin-right: 3.3rem;
+  }
+}
+.editing .edit-buttons .edit-btn {
+  min-width: 70px;
+  height: 40px;
+  padding: 0 1.25rem;
+  cursor: pointer;
+  border: none;
+  border-radius: 50px;
+  font-size: 0.95rem;
+  transition: all 0.15s ease-in-out;
+}
+@media (max-width: 768px) {
+  .editing .edit-buttons .edit-btn {
+    flex: 1;
+    max-width: 100px;
+  }
+}
+.editing .edit-buttons .edit-btn:hover {
+  filter: brightness(1.1);
+}
+.editing .edit-buttons .edit-btn.save {
+  color: #A9C7FA;
+  background-color: #383838;
+}
+.editing .edit-buttons .edit-btn.cancel {
+  color: #383838;
+  background: #A9C7FA;
 }
 
 .typing-area {
