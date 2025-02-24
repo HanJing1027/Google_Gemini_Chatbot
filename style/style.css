@@ -250,7 +250,6 @@ body {
 }
 .message .message-content {
   width: 100%;
-  max-width: 85%;
   display: flex;
   gap: 1rem;
   align-items: flex-start;
@@ -291,7 +290,6 @@ body {
   background-color: #383838;
   transform: scale(0.8);
   transition: all 0.2s ease;
-  margin: 0 0.5rem;
   flex-shrink: 0;
   visibility: hidden;
   opacity: 0;
