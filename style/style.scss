@@ -127,6 +127,7 @@ body {
     padding      : 1rem 1.5rem;
     border-radius: 15px;
     max-width    : 100%; // 確保文字不會溢出
+    white-space  : pre-wrap;
   }
 
   .icon {
@@ -227,17 +228,18 @@ body {
   }
 
   .edit-message-input {
-    flex         : 1;
-    min-height   : 45px;
-    border-radius: 15px;
-    background   : transparent;
-    outline      : none;
-    border       : 2px solid variables.$secondary-color;
-    color        : variables.$text-color;
-    line-height  : 1.5;
-    padding      : 0.75rem 1.5rem;
-    font-size    : 1rem;
-    resize       : vertical; // 允許垂直調整大小
+    flex           : 1;
+    height         : 45px;
+    border-radius  : 15px;
+    background     : transparent;
+    outline        : none;
+    border         : 2px solid variables.$secondary-color;
+    color          : variables.$text-color;
+    line-height    : 1.5;
+    padding        : 0.5rem 1.5rem;
+    font-size      : 1rem;
+    resize         : none;
+    scrollbar-width: none;
 
     @media (max-width: 768px) {
       width     : 100%;
@@ -324,9 +326,11 @@ body {
     border          : none;
     outline         : none;
     background-color: variables.$secondary-color;
-    padding         : 0 30px;
+    padding         : 15px 65px 15px 30px;
     color           : #FFF;
     font-size       : 1rem;
+    resize          : none;
+    scrollbar-width : none;
 
     transition: all .15s ease;
 

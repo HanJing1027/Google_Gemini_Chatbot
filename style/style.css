@@ -276,6 +276,7 @@ body {
   padding: 1rem 1.5rem;
   border-radius: 15px;
   max-width: 100%;
+  white-space: pre-wrap;
 }
 .message .icon {
   display: flex;
@@ -356,16 +357,17 @@ body {
 }
 .editing .edit-message-input {
   flex: 1;
-  min-height: 45px;
+  height: 45px;
   border-radius: 15px;
   background: transparent;
   outline: none;
   border: 2px solid #383838;
   color: #E3E3E3;
   line-height: 1.5;
-  padding: 0.75rem 1.5rem;
+  padding: 0.5rem 1.5rem;
   font-size: 1rem;
-  resize: vertical;
+  resize: none;
+  scrollbar-width: none;
   transition: all 0.15s ease-in-out;
 }
 @media (max-width: 768px) {
@@ -444,9 +446,11 @@ body {
   border: none;
   outline: none;
   background-color: #383838;
-  padding: 0 30px;
+  padding: 15px 65px 15px 30px;
   color: #FFF;
   font-size: 1rem;
+  resize: none;
+  scrollbar-width: none;
   transition: all 0.15s ease;
 }
 .input-wrapper .typing-input:focus {

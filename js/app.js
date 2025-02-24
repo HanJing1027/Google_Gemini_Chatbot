@@ -2,7 +2,10 @@ import { config } from "./config.js";
 
 const typingForm = document.querySelector(".typing-form");
 const typingInput = typingForm.querySelector(".typing-input");
+const sendButton = typingForm.querySelector(".send-btn");
 const chatList = document.querySelector(".chat-list");
+
+typingInput.focus();
 
 let userMessage;
 let editingMessageElement = null;
@@ -40,8 +43,7 @@ const enableEditMode = (messageElement, messageText) => {
   messageText.style.display = "none";
 
   // 建立編輯輸入框
-  const editInput = document.createElement("input");
-  editInput.type = "text";
+  const editInput = document.createElement("textarea");
   editInput.classList.add("edit-message-input");
   editInput.value = messageText.textContent;
 
@@ -217,7 +219,6 @@ const generateBotResponse = async (message) => {
       requestOptions
     );
     const data = await response.json();
-    console.log(data);
     const responseMessage = data.candidates[0].content.parts[0].text;
 
     // 移除加載動畫
@@ -230,7 +231,21 @@ const generateBotResponse = async (message) => {
   }
 };
 
+let isComposing = false;
 typingForm.addEventListener("submit", (e) => {
   e.preventDefault();
-  handleOutgoingMessage();
+});
+sendButton.addEventListener("click", handleOutgoingMessage);
+typingInput.addEventListener("compositionstart", () => {
+  isComposing = true;
+});
+typingInput.addEventListener("compositionend", () => {
+  isComposing = false;
+});
+typingInput.addEventListener("keydown", (e) => {
+  if (e.key === "Enter" && !e.shiftKey && !isComposing) {
+    e.preventDefault();
+    handleOutgoingMessage();
+    typingInput.value = "";
+  }
 });
