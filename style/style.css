@@ -243,7 +243,7 @@ body {
   padding: 1.5rem 0;
   position: relative;
 }
-.message:not(.loading):hover .icon {
+.message:not(.loading, .editing):hover .icon {
   visibility: visible;
   opacity: 1;
   transform: scale(1);
@@ -294,6 +294,9 @@ body {
   visibility: hidden;
   opacity: 0;
 }
+.message .icon:hover {
+  background-color: #444;
+}
 
 .outgoing .message-content {
   flex-direction: row-reverse;
@@ -306,9 +309,6 @@ body {
 .outgoing .icon {
   margin-right: 0.5rem;
 }
-.outgoing .icon:hover {
-  background-color: #444;
-}
 
 .incoming .message-text {
   background: #444;
@@ -316,9 +316,6 @@ body {
 }
 .incoming .icon {
   margin-left: 0.5rem;
-}
-.incoming .icon:hover {
-  background-color: #383838;
 }
 
 .message.loading .message-text {
@@ -349,6 +346,9 @@ body {
   width: 77%;
 }
 
+.editing .message-text {
+  display: none;
+}
 .editing .message-content {
   flex-wrap: wrap;
   gap: 1rem;
@@ -409,11 +409,11 @@ body {
 .editing .edit-buttons .edit-btn:hover {
   filter: brightness(1.1);
 }
-.editing .edit-buttons .edit-btn.save {
+.editing .edit-buttons .edit-btn.cancel {
   color: #A9C7FA;
   background-color: #383838;
 }
-.editing .edit-buttons .edit-btn.cancel {
+.editing .edit-buttons .edit-btn.save {
   color: #383838;
   background: #A9C7FA;
 }

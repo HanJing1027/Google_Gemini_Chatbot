@@ -93,7 +93,7 @@ body {
   padding : 1.5rem 0;
   position: relative;
 
-  &:not(.loading):hover .icon {
+  &:not(.loading, .editing):hover .icon {
     visibility: visible;
     opacity   : 1;
     transform : scale(1);
@@ -146,6 +146,10 @@ body {
 
     visibility: hidden;
     opacity   : 0;
+
+    &:hover {
+      background-color: variables.$secondary-hover-color;
+    }
   }
 }
 
@@ -162,10 +166,6 @@ body {
 
   .icon {
     margin-right: 0.5rem; // 調整右側間距
-
-    &:hover {
-      background-color: variables.$secondary-hover-color;
-    }
   }
 }
 
@@ -177,10 +177,6 @@ body {
 
   .icon {
     margin-left: 0.5rem; // 調整左側間距
-
-    &:hover {
-      background-color: variables.$secondary-color;
-    }
   }
 }
 
@@ -220,6 +216,10 @@ body {
 }
 
 .editing {
+  .message-text {
+    display: none;
+  }
+
   .message-content {
     flex-wrap: wrap;
     gap      : 1rem;
@@ -283,12 +283,12 @@ body {
         filter: brightness(1.1);
       }
 
-      &.save {
+      &.cancel {
         color           : variables.$outline-color;
         background-color: variables.$secondary-color;
       }
 
-      &.cancel {
+      &.save {
         color     : variables.$secondary-color;
         background: variables.$outline-color;
       }
