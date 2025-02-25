@@ -1,8 +1,7 @@
 import { config } from "./config.js";
 
 const typingForm = document.querySelector(".typing-form");
-const typingInput = typingForm.querySelector(".typing-input");
-const sendButton = typingForm.querySelector(".send-btn");
+const typingInput = typingForm.querySelector(".typing-form .typing-input");
 const chatList = document.querySelector(".chat-list");
 
 typingInput.focus();
@@ -97,6 +96,7 @@ const handleOutgoingMessage = () => {
   if (!userMessage) return;
 
   if (editingMessageElement) {
+    chatList.scrollTop = chatList.scrollHeight;
     const messageText = editingMessageElement.querySelector(".message-text");
     handleMessageUpdate(messageText, userMessage);
     editingMessageElement = null;
@@ -163,6 +163,14 @@ const createMessageElement = (message, className) => {
   messageContent.appendChild(messageIcon);
   messageElement.appendChild(messageContent);
   chatList.appendChild(messageElement);
+
+  scrollToBottom();
+};
+
+// 滾動邏輯
+const scrollToBottom = () => {
+  // 確保對話框總是顯示最新的對話
+  chatList.scrollTop = chatList.scrollHeight;
 };
 
 // 顯示加載動畫
@@ -191,12 +199,15 @@ const showLoadingAnimation = () => {
   messageElement.appendChild(messageContent);
   chatList.appendChild(messageElement);
 
+  scrollToBottom();
+
   return messageElement;
 };
 
 // Gemini API
 const generateBotResponse = async (message) => {
   const loadingElement = showLoadingAnimation();
+  scrollToBottom();
 
   const requestOptions = {
     method: "POST",
@@ -224,10 +235,11 @@ const generateBotResponse = async (message) => {
     // 移除加載動畫
     chatList.removeChild(loadingElement);
 
-    // 顯示回應訊息 (此處假設 data.response 為回應內容)
     createMessageElement(responseMessage, "incoming");
   } catch (err) {
     console.error("Error:", err);
+  } finally {
+    scrollToBottom();
   }
 };
 
@@ -235,7 +247,6 @@ let isComposing = false;
 typingForm.addEventListener("submit", (e) => {
   e.preventDefault();
 });
-sendButton.addEventListener("click", handleOutgoingMessage);
 typingInput.addEventListener("compositionstart", () => {
   isComposing = true;
 });
@@ -248,4 +259,15 @@ typingInput.addEventListener("keydown", (e) => {
     handleOutgoingMessage();
     typingInput.value = "";
   }
+});
+
+const inputInitHeight = typingInput.scrollHeight;
+typingInput.addEventListener("input", () => {
+  typingInput.style.height = `${inputInitHeight}px`;
+
+  typingInput.style.height = `${typingInput.scrollHeight}px`;
+
+  // 當內容超過 max-height 時顯示捲動條
+  typingInput.style.overflowY =
+    typingInput.scrollHeight > 200 ? "auto" : "hidden";
 });
