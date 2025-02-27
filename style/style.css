@@ -336,6 +336,9 @@ body {
   background: var(--secondary-hover-color);
   border-top-left-radius: 5px;
 }
+.incoming .message-text.error {
+  background-color: #FA445F;
+}
 .incoming .icon {
   margin-left: 0.5rem;
 }

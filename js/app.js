@@ -10,6 +10,7 @@ let userMessage;
 let editingMessageElement = null;
 let isComposing = false;
 let isWaitingForResponse = false;
+let isError = false;
 
 // 儲存標題狀態
 const saveHeaderState = (isHidden) => {
@@ -29,8 +30,11 @@ const saveChatHistory = () => {
   messageElements.forEach((element) => {
     if (element.classList.contains("loading")) return; // 避免儲存加載動畫
 
+    const messageTextElement = element.querySelector(".message-text");
+    if (messageTextElement.classList.contains("error")) return; // 避免儲存錯誤訊息
+
     const isOutgoing = element.classList.contains("outgoing");
-    const messageText = element.querySelector(".message-text").textContent;
+    const messageText = messageTextElement.textContent;
 
     // 將訊息類型、訊息內容存入物件
     messages.push({
@@ -292,6 +296,11 @@ const createMessageElement = (message, className, useTypingEffect) => {
     });
   }
 
+  if (isError) {
+    messageText.classList.add("error");
+    isError = false;
+  }
+
   // 組合元素
   messageContent.appendChild(messageImage);
   messageContent.appendChild(messageText);
@@ -379,6 +388,9 @@ const generateBotResponse = async (message) => {
     createMessageElement(responseMessage, "incoming", true);
   } catch (err) {
     console.error("Error:", err);
+    chatList.removeChild(loadingElement);
+    isError = true;
+    createMessageElement("抱歉，我們遇到了一些問題", "incoming", true);
   } finally {
     scrollToBottom();
     isWaitingForResponse = false;
