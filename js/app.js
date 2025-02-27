@@ -3,6 +3,7 @@ import { config } from "./config.js";
 const typingForm = document.querySelector(".typing-form");
 const typingInput = document.querySelector(".typing-input");
 const chatList = document.querySelector(".chat-list");
+const toggleThemeBtn = document.querySelector(".theme-toggle");
 
 let userMessage;
 let editingMessageElement = null;
@@ -146,9 +147,7 @@ const createMessageElement = (message, className, useTypingEffect) => {
     // 機器人回覆使用打字效果
     messageText.textContent = "";
     let index = 0;
-
-    // 設定打字速度 (每個字元的延遲毫秒數)
-    const typingSpeed = 15;
+    let typingSpeed = 5;
 
     // 打字效果函數
     const typeNextCharacter = () => {
@@ -156,7 +155,6 @@ const createMessageElement = (message, className, useTypingEffect) => {
         messageText.textContent += message[index];
         index++;
 
-        // 自動滾動確保可以看到最新內容
         scrollToBottom();
 
         // 設定下一個字元的延遲
@@ -171,6 +169,20 @@ const createMessageElement = (message, className, useTypingEffect) => {
   const messageIcon = document.createElement("i");
   messageIcon.classList.add("icon", "bx");
   messageIcon.classList.add(className === "outgoing" ? "bxs-edit" : "bx-copy");
+
+  // 複製功能 & 複製icon切換
+  if (className === "incoming") {
+    messageIcon.addEventListener("click", () => {
+      navigator.clipboard.writeText(messageText.textContent.trim());
+      messageIcon.classList.remove("bx-copy");
+      messageIcon.classList.add("bx-check");
+
+      setTimeout(() => {
+        messageIcon.classList.add("bx-copy");
+        messageIcon.classList.remove("bx-check");
+      }, 1000);
+    });
+  }
 
   // 訊息編輯功能
   if (className === "outgoing") {
@@ -326,4 +338,19 @@ const adjustInputHeight = (input, inputHeightNum) => {
 
 typingInput.addEventListener("input", () => {
   adjustInputHeight(typingInput, 50);
+});
+
+toggleThemeBtn.addEventListener("click", () => {
+  const isLightMode = document.querySelector("body").classList.toggle("light");
+  const themeIcon = document.querySelector(".theme-toggle i");
+  switch (isLightMode) {
+    case true:
+      themeIcon.classList.remove("bx-sun");
+      themeIcon.classList.add("bx-moon");
+      break;
+    case false:
+      themeIcon.classList.remove("bx-moon");
+      themeIcon.classList.add("bx-sun");
+      break;
+  }
 });

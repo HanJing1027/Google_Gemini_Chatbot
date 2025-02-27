@@ -332,7 +332,7 @@ body {
   border-radius             : 28px;
   padding                   : 13px 50px 15px 30px;
   background-color          : variables.$secondary-color;
-  color                     : #FFF;
+  color                     : variables.$text-color;
   overflow-y                : auto;
   font-size                 : 1rem;
   outline                   : none;
@@ -341,8 +341,6 @@ body {
   scrollbar-width           : none;
   -webkit-overflow-scrolling: touch; // IOS滾動優化
   line-height               : 1.5;
-
-  transition: all .2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 
   &:focus {
     background-color: variables.$secondary-hover-color;
@@ -376,8 +374,6 @@ body {
     border-radius   : 50%;
     border          : none;
     background-color: variables.$secondary-color;
-
-    transition: all 0.3s ease;
 
     &:hover {
       background-color: variables.$secondary-hover-color;

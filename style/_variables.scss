@@ -1,10 +1,32 @@
-$text-color            : #E3E3E3;
-$subheading-color      : #828282;
-$placeholder-color     : #A6A6A6;
-$primary-color         : #242424;
-$secondary-color       : #383838;
-$secondary-hover-color : #444;
-$outline-color         : #A9C7FA;
+:root {
+  // 深色模式顏色 (預設)
+  --text-color           : #E3E3E3;
+  --subheading-color     : #828282;
+  --placeholder-color    : #A6A6A6;
+  --primary-color        : #242424;
+  --secondary-color      : #383838;
+  --secondary-hover-color: #444;
+  --outline-color        : #A9C7FA;
+}
+
+// 淺色模式顏色
+body.light {
+  --text-color           : #222222;
+  --subheading-color     : #A0A0A0;
+  --placeholder-color    : #6C6C6C;
+  --primary-color        : #F5F5F5;
+  --secondary-color      : #DADFE7;
+  --secondary-hover-color: #D4D8E1;
+  --outline-color        : #1A73E8;
+}
+
+$text-color           : var(--text-color);
+$subheading-color     : var(--subheading-color);
+$placeholder-color    : var(--placeholder-color);
+$primary-color        : var(--primary-color);
+$secondary-color      : var(--secondary-color);
+$secondary-hover-color: var(--secondary-hover-color);
+$outline-color        : var(--outline-color);
 
 $loading-message: loading-message 3s linear infinite;
 
