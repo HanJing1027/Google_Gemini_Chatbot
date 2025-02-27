@@ -162,14 +162,20 @@
 
     <!-- 輸入框區域 -->
     <section class="typing-area">
-      <form method="post" action="#" class="typing-form">
-        <textarea class="typing-input" placeholder="請輸入內容..."></textarea>
+      <textarea
+        class="typing-input"
+        placeholder="請輸入內容..."
+        aria-label="訊息輸入區域"
+      ></textarea>
 
-        <div class="action-buttons">
-          <i class="theme-color bx bx-sun"></i>
-          <i class="delete-btn bx bx-trash-alt"></i>
-        </div>
-      </form>
+      <div class="action-buttons">
+        <button class="theme-toggle" aria-label="切換主題">
+          <i class="bx bx-sun"></i>
+        </button>
+        <button class="delete-btn" aria-label="刪除對話">
+          <i class="bx bx-trash-alt"></i>
+        </button>
+      </div>
     </section>
 
     <!-- js -->

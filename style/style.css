@@ -236,7 +236,7 @@ body {
 
 .chat-list {
   width: 100%;
-  max-height: 850px;
+  max-height: 863px;
   padding: 0 1rem;
   overflow-y: auto;
 }
@@ -360,7 +360,8 @@ body {
 .editing .edit-message-input {
   flex: 1;
   height: 45px;
-  border-radius: 15px;
+  max-height: 180px;
+  border-radius: 20px;
   background: transparent;
   outline: none;
   border: 2px solid #383838;
@@ -370,6 +371,7 @@ body {
   font-size: 1rem;
   resize: none;
   scrollbar-width: none;
+  overflow-y: auto;
   transition: all 0.15s ease-in-out;
 }
 @media (max-width: 768px) {
@@ -424,72 +426,90 @@ body {
 
 .typing-area {
   width: 100%;
-  position: absolute;
+  position: fixed;
   bottom: 0;
-  padding: 0 0 1.5rem;
+  left: 0;
+  right: 0;
+  z-index: 10;
   color: #E3E3E3;
-  background-color: #242424;
-  box-shadow: 0 0 25px 15px #242424;
-}
-.typing-area .typing-form {
   display: flex;
   align-items: flex-end;
   gap: 10px;
-  padding: 0 1rem;
+  padding: 0 0 1.5rem;
+  background-color: #242424;
+  box-shadow: 0 0 25px 15px #242424;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+@media (max-width: 768px) {
+  .typing-area {
+    padding: 0 1rem 1.5rem;
+  }
 }
 
-.typing-form .typing-input {
+.typing-input {
   width: 100%;
-  height: 55px;
+  height: 50px;
   max-height: 200px;
-  border-radius: 40px;
-  padding: 15px 65px 15px 30px;
+  border-radius: 28px;
+  padding: 13px 50px 15px 30px;
   background-color: #383838;
   color: #FFF;
+  overflow-y: auto;
   font-size: 1rem;
   outline: none;
   border: none;
   resize: none;
   scrollbar-width: none;
-  transition: all 0.15s ease;
+  -webkit-overflow-scrolling: touch;
+  line-height: 1.5;
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
-.typing-form .typing-input:focus {
+.typing-input:focus {
   background-color: #444;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
 }
-.typing-form .typing-input::-moz-placeholder {
+.typing-input::-moz-placeholder {
   color: #A6A6A6;
+  opacity: 0.8;
+  -moz-transition: opacity 0.2s ease;
+  transition: opacity 0.2s ease;
 }
-.typing-form .typing-input::placeholder {
+.typing-input::placeholder {
   color: #A6A6A6;
+  opacity: 0.8;
+  transition: opacity 0.2s ease;
 }
-.typing-form .typing-input:valid + .send-btn {
-  --scale: 1;
+.typing-input:focus::-moz-placeholder {
+  opacity: 0.5;
+}
+.typing-input:focus::placeholder {
+  opacity: 0.5;
 }
 
 .action-buttons {
   display: flex;
-  align-items: flex-end;
+  align-items: center;
+  justify-content: center;
   gap: 10px;
 }
-.action-buttons i {
+.action-buttons button {
+  cursor: pointer;
+  width: 50px;
+  height: 50px;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 42px;
-  height: 42px;
+  border-radius: 50%;
+  border: none;
+  background-color: #383838;
+  transition: all 0.3s ease;
+}
+.action-buttons button:hover {
+  background-color: #444;
+}
+.action-buttons button i {
+  color: #E3E3E3;
   font-size: 1.3rem;
   font-weight: 500;
-  margin-top: 2.5rem;
-  border-radius: 50%;
-  background-color: #242424;
-  cursor: pointer;
-  width: 56px;
-  height: 56px;
-  font-size: 1.4rem;
-  margin-top: 0;
-  background-color: #383838;
-  transition: all 0.15s ease;
-}
-.action-buttons i:hover {
-  background-color: #444;
 }/*# sourceMappingURL=style.css.map */

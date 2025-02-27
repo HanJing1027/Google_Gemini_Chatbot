@@ -1,24 +1,34 @@
 import { config } from "./config.js";
 
 const typingForm = document.querySelector(".typing-form");
-const typingInput = typingForm.querySelector(".typing-form .typing-input");
+const typingInput = document.querySelector(".typing-input");
 const chatList = document.querySelector(".chat-list");
-
-typingInput.focus();
 
 let userMessage;
 let editingMessageElement = null;
+let isComposing = false;
+let isWaitingForResponse = false;
 
 // 處理訊息更新
 const handleMessageUpdate = (messageText, newMessage) => {
   if (newMessage && newMessage !== messageText.textContent) {
     messageText.textContent = newMessage;
 
-    // 清除舊的回應訊息
-    const incomingMessage = chatList.querySelector(".incoming:last-child");
-    if (incomingMessage) {
-      chatList.removeChild(incomingMessage);
+    const editedMessage = messageText.closest(".message"); // 找到當前編輯的訊息
+    // 刪除所有編輯訊息之後的訊息
+    let currentNode = editedMessage.nextElementSibling;
+    const nodesToRemove = [];
+
+    // 收集所有需要刪除的節點
+    while (currentNode) {
+      nodesToRemove.push(currentNode);
+      currentNode = currentNode.nextElementSibling;
     }
+
+    // 刪除所有需要刪除的節點
+    nodesToRemove.forEach((node) => {
+      chatList.removeChild(node);
+    });
 
     // 這裡可以加上更新訊息的 API 請求
     generateBotResponse(newMessage);
@@ -59,6 +69,8 @@ const enableEditMode = (messageElement, messageText) => {
   messageContent.insertBefore(editInput, messageIcon);
   messageContent.insertBefore(editButtons, messageIcon);
 
+  adjustInputHeight(editInput, 45);
+
   // 綁定按鈕事件
   editButtons
     .querySelector(".cancel")
@@ -71,8 +83,6 @@ const enableEditMode = (messageElement, messageText) => {
     cancelEditing(editInput, editButtons, messageText, messageElement);
     handleMessageUpdate(messageText, newMessage);
   });
-  // 是否正在輸入中文
-  let isComposing = false;
   editInput.addEventListener("compositionstart", () => {
     isComposing = true;
   });
@@ -85,6 +95,9 @@ const enableEditMode = (messageElement, messageText) => {
       cancelEditing(editInput, editButtons, messageText, messageElement);
       handleMessageUpdate(messageText, newMessage);
     }
+  });
+  editInput.addEventListener("input", () => {
+    adjustInputHeight(editInput, 45);
   });
 
   editInput.focus();
@@ -101,7 +114,7 @@ const handleOutgoingMessage = () => {
     handleMessageUpdate(messageText, userMessage);
     editingMessageElement = null;
   } else {
-    createMessageElement(userMessage, "outgoing");
+    createMessageElement(userMessage, "outgoing", false);
   }
 
   typingInput.value = "";
@@ -110,7 +123,7 @@ const handleOutgoingMessage = () => {
 };
 
 // 建立訊息元素
-const createMessageElement = (message, className) => {
+const createMessageElement = (message, className, useTypingEffect) => {
   const messageElement = document.createElement("div");
   messageElement.classList.add("message", className);
 
@@ -127,7 +140,33 @@ const createMessageElement = (message, className) => {
 
   const messageText = document.createElement("p");
   messageText.classList.add("message-text");
-  messageText.textContent = message;
+  if (!useTypingEffect) {
+    messageText.textContent = message;
+  } else {
+    // 機器人回覆使用打字效果
+    messageText.textContent = "";
+    let index = 0;
+
+    // 設定打字速度 (每個字元的延遲毫秒數)
+    const typingSpeed = 15;
+
+    // 打字效果函數
+    const typeNextCharacter = () => {
+      if (index < message.length) {
+        messageText.textContent += message[index];
+        index++;
+
+        // 自動滾動確保可以看到最新內容
+        scrollToBottom();
+
+        // 設定下一個字元的延遲
+        setTimeout(typeNextCharacter, typingSpeed);
+      }
+    };
+
+    // 啟動打字效果
+    setTimeout(typeNextCharacter, typingSpeed);
+  }
 
   const messageIcon = document.createElement("i");
   messageIcon.classList.add("icon", "bx");
@@ -165,6 +204,8 @@ const createMessageElement = (message, className) => {
   chatList.appendChild(messageElement);
 
   scrollToBottom();
+
+  return messageElement;
 };
 
 // 滾動邏輯
@@ -204,8 +245,12 @@ const showLoadingAnimation = () => {
   return messageElement;
 };
 
-// Gemini API
+// Gemini API 請求
 const generateBotResponse = async (message) => {
+  if (isWaitingForResponse) return;
+
+  isWaitingForResponse = true;
+
   const loadingElement = showLoadingAnimation();
   scrollToBottom();
 
@@ -235,18 +280,15 @@ const generateBotResponse = async (message) => {
     // 移除加載動畫
     chatList.removeChild(loadingElement);
 
-    createMessageElement(responseMessage, "incoming");
+    createMessageElement(responseMessage, "incoming", true);
   } catch (err) {
     console.error("Error:", err);
   } finally {
     scrollToBottom();
+    isWaitingForResponse = false;
   }
 };
 
-let isComposing = false;
-typingForm.addEventListener("submit", (e) => {
-  e.preventDefault();
-});
 typingInput.addEventListener("compositionstart", () => {
   isComposing = true;
 });
@@ -256,18 +298,32 @@ typingInput.addEventListener("compositionend", () => {
 typingInput.addEventListener("keydown", (e) => {
   if (e.key === "Enter" && !e.shiftKey && !isComposing) {
     e.preventDefault();
+
+    if (isWaitingForResponse) return;
+
     handleOutgoingMessage();
     typingInput.value = "";
+    adjustInputHeight(typingInput, 50);
   }
 });
 
-const inputInitHeight = typingInput.scrollHeight;
+// 提取為單獨函數以便重用
+const adjustInputHeight = (input, inputHeightNum) => {
+  const inputInitHeight = inputHeightNum;
+
+  // 先將高度重設為 auto 以便瀏覽器計算實際所需高度
+  input.style.height = "auto";
+
+  // 獲取瀏覽器計算的高度並減去額外的 28px
+  const calculatedHeight = input.scrollHeight - 28;
+
+  // 實際高度應為計算高度與初始高度中的較大者
+  const newHeight = Math.max(inputInitHeight, calculatedHeight);
+  input.style.height = `${newHeight}px`;
+
+  input.style.borderRadius = newHeight > inputHeightNum ? "20px" : "50px";
+};
+
 typingInput.addEventListener("input", () => {
-  typingInput.style.height = `${inputInitHeight}px`;
-
-  typingInput.style.height = `${typingInput.scrollHeight}px`;
-
-  // 當內容超過 max-height 時顯示捲動條
-  typingInput.style.overflowY =
-    typingInput.scrollHeight > 200 ? "auto" : "hidden";
+  adjustInputHeight(typingInput, 50);
 });
