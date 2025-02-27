@@ -190,7 +190,6 @@ body {
 }
 
 .header {
-  display: none;
   color: var(--text-color);
   margin-top: 7vh;
   padding: 1rem;

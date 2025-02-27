@@ -1,6 +1,7 @@
 import { config } from "./config.js";
 
-const typingForm = document.querySelector(".typing-form");
+const headerElement = document.querySelector(".header");
+const suggestions = document.querySelectorAll(".suggestion");
 const typingInput = document.querySelector(".typing-input");
 const chatList = document.querySelector(".chat-list");
 const toggleThemeBtn = document.querySelector(".theme-toggle");
@@ -9,6 +10,72 @@ let userMessage;
 let editingMessageElement = null;
 let isComposing = false;
 let isWaitingForResponse = false;
+
+// 儲存標題狀態
+const saveHeaderState = (isHidden) => {
+  localStorage.setItem("headerHidden", isHidden ? "true" : "false");
+};
+
+// 儲存主題設定
+const saveThemePreference = (isLightMode) => {
+  localStorage.setItem("themePreference", isLightMode ? "true" : "false");
+};
+
+// 儲存聊天記錄
+const saveChatHistory = () => {
+  const messages = [];
+  const messageElements = chatList.querySelectorAll(".message");
+
+  messageElements.forEach((element) => {
+    if (element.classList.contains("loading")) return; // 避免儲存加載動畫
+
+    const isOutgoing = element.classList.contains("outgoing");
+    const messageText = element.querySelector(".message-text").textContent;
+
+    // 將訊息類型、訊息內容存入物件
+    messages.push({
+      content: messageText,
+      isOutgoing: isOutgoing,
+    });
+  });
+
+  localStorage.setItem("chatHistory", JSON.stringify(messages));
+};
+
+// 載入聊天記錄
+const loadChatHistory = () => {
+  const savedChat = localStorage.getItem("chatHistory");
+  if (!savedChat) return;
+
+  try {
+    const messages = JSON.parse(savedChat);
+
+    chatList.innerHTML = ""; // 清空聊天記錄
+
+    // 逐一載入聊天記錄
+    messages.forEach((message) => {
+      const className = message.isOutgoing ? "outgoing" : "incoming";
+      createMessageElement(message.content, className, false);
+    });
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+// 處理建議點擊
+suggestions.forEach((element) => {
+  element.addEventListener("click", () => {
+    const suggestionText = element.querySelector(".text").textContent.trim();
+    console.log(suggestionText);
+
+    createMessageElement(suggestionText, "outgoing", false);
+    generateBotResponse(suggestionText);
+
+    headerElement.style.display = "none";
+
+    saveHeaderState(true);
+  });
+});
 
 // 處理訊息更新
 const handleMessageUpdate = (messageText, newMessage) => {
@@ -31,7 +98,10 @@ const handleMessageUpdate = (messageText, newMessage) => {
       chatList.removeChild(node);
     });
 
-    // 這裡可以加上更新訊息的 API 請求
+    // 保存聊天歷史
+    saveChatHistory();
+
+    // 生成新的回應
     generateBotResponse(newMessage);
   }
 };
@@ -120,11 +190,15 @@ const handleOutgoingMessage = () => {
 
   typingInput.value = "";
 
+  headerElement.style.display = "none";
+  saveHeaderState(true);
+
   generateBotResponse(userMessage);
 };
 
 // 建立訊息元素
 const createMessageElement = (message, className, useTypingEffect) => {
+  // 創建元素
   const messageElement = document.createElement("div");
   messageElement.classList.add("message", className);
 
@@ -137,12 +211,21 @@ const createMessageElement = (message, className, useTypingEffect) => {
     className === "outgoing"
       ? "./images/unnamed.jpg"
       : "./images/gemini-color.png";
-  messageImage.alt = "user image";
+  messageImage.alt = className === "outgoing" ? "user image" : "gemini image";
 
   const messageText = document.createElement("p");
   messageText.classList.add("message-text");
+
+  const messageIcon = document.createElement("i");
+  messageIcon.classList.add("icon", "bx");
+  messageIcon.classList.add(className === "outgoing" ? "bxs-edit" : "bx-copy");
+
+  // 處理訊息內容顯示
   if (!useTypingEffect) {
+    // 直接顯示文本
     messageText.textContent = message;
+    // 非打字效果直接保存聊天記錄
+    setTimeout(() => saveChatHistory(), 100);
   } else {
     // 機器人回覆使用打字效果
     messageText.textContent = "";
@@ -154,8 +237,12 @@ const createMessageElement = (message, className, useTypingEffect) => {
       if (index < message.length) {
         messageText.textContent += message[index];
         index++;
-
         scrollToBottom();
+
+        // 如果是最後一個字元，保存聊天記錄
+        if (index === message.length) {
+          setTimeout(() => saveChatHistory(), 100);
+        }
 
         // 設定下一個字元的延遲
         setTimeout(typeNextCharacter, typingSpeed);
@@ -166,11 +253,7 @@ const createMessageElement = (message, className, useTypingEffect) => {
     setTimeout(typeNextCharacter, typingSpeed);
   }
 
-  const messageIcon = document.createElement("i");
-  messageIcon.classList.add("icon", "bx");
-  messageIcon.classList.add(className === "outgoing" ? "bxs-edit" : "bx-copy");
-
-  // 複製功能 & 複製icon切換
+  // 複製功能
   if (className === "incoming") {
     messageIcon.addEventListener("click", () => {
       navigator.clipboard.writeText(messageText.textContent.trim());
@@ -184,7 +267,7 @@ const createMessageElement = (message, className, useTypingEffect) => {
     });
   }
 
-  // 訊息編輯功能
+  // 編輯功能
   if (className === "outgoing") {
     messageIcon.addEventListener("click", () => {
       // 如果已有其他正在編輯的訊息，先取消編輯
@@ -209,6 +292,7 @@ const createMessageElement = (message, className, useTypingEffect) => {
     });
   }
 
+  // 組合元素
   messageContent.appendChild(messageImage);
   messageContent.appendChild(messageText);
   messageContent.appendChild(messageIcon);
@@ -353,4 +437,47 @@ toggleThemeBtn.addEventListener("click", () => {
       themeIcon.classList.add("bx-sun");
       break;
   }
+
+  // 儲存主題設定
+  saveThemePreference(isLightMode);
+});
+
+const deleteBtn = document.querySelector(".delete-btn");
+deleteBtn.addEventListener("click", () => {
+  if (confirm("確定要刪除所有聊天記錄嗎？")) {
+    chatList.innerHTML = "";
+    localStorage.removeItem("chatHistory");
+
+    headerElement.style.display = "block";
+
+    saveHeaderState(false);
+  }
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+  // 讀取主題設定
+  const savedTheme = localStorage.getItem("themePreference");
+  if (savedTheme) {
+    const body = document.querySelector("body");
+    const themeIcon = document.querySelector(".theme-toggle i");
+
+    if (savedTheme === "true") {
+      body.classList.add("light");
+      themeIcon.classList.remove("bx-sun");
+      themeIcon.classList.add("bx-moon");
+    } else {
+      body.classList.remove("light");
+      themeIcon.classList.remove("bx-moon");
+      themeIcon.classList.add("bx-sun");
+    }
+  }
+
+  const savedHeaderState = localStorage.getItem("headerHidden");
+  if (savedHeaderState === "true") {
+    headerElement.style.display = "none";
+  } else {
+    headerElement.style.display = "block";
+  }
+
+  loadChatHistory();
 });
